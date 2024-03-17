@@ -2,34 +2,53 @@
 # A simple script to manage the bind9 DNS server
 
 ZONE_PATH="config"
+ZONE_FILE=
 DEFAULT_ZONE_FILE="fileserver.io.zone"
+HOSTNAME=
 COMPOSE_FILE="compose.yml"
 
-#ZONE_FILE=${2:-$DEFAULT_ZONE_FILE}
+# Parse command-line arguments
+while getopts ":h:f:" opt; do
+  case ${opt} in
+    h )
+      HOSTNAME=$OPTARG
+      ;;
+    f )
+      ZONE_FILE=$OPTARG
+      ;;
+    \? )
+      echo "Invalid option: -$OPTARG" 1>&2
+      exit 1
+      ;;
+    : )
+      echo "Option -$OPTARG requires an argument." 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
 
 # Add entry to the zone file and restart the bind9 service
 function add_entry { 
-    echo "$1 IN A $2" >> $ZONE_PATH/$ZONE_FILE
+    echo "$1 IN A $2" >> $ZONE_PATH/$FILE
     echo "Added $1 -> $2"
     docker compose -f $COMPOSE_FILE restart bind9
 }
 
 # Remove entry from the zone file and restart the bind9 service
 function remove_entry {
-    sed -i "/$1/d" $ZONE_PATH/$ZONE_FILE
+    sed -i "/$1/d" $ZONE_PATH/$FILE
     echo "Removed $1"
     docker compose -f $COMPOSE_FILE restart bind9
 }
 
 # List all entries in the zone file
 function list_entries {
-    local HOSTNAME=$1
-    #local ZONE_FILE=$2
-    echo $ZONE_PATH/$ZONE_FILE # debug
+    echo $ZONE_PATH/$FILE # debug
     if [ -z "$HOSTNAME" ]; then
-        awk '/NS/ {flag=1} flag' $ZONE_PATH/$ZONE_FILE
+        awk '/NS/ {flag=1} flag' $ZONE_PATH/$FILE
     else
-        awk -v hostname="$HOSTNAME" '/NS/ {flag=1} flag && $0 ~ hostname' $ZONE_PATH/$ZONE_FILE
+        awk -v hostname="$HOSTNAME" '/NS/ {flag=1} flag && $0 ~ hostname' $ZONE_PATH/$FILE
     fi
 }
 
@@ -44,14 +63,14 @@ function status {
 }
 
 if [ "$1" == "add" ]; then
-    ZONE_FILE=${4:-$DEFAULT_ZONE_FILE}
+    FILE=${4:-$DEFAULT_ZONE_FILE}
     add_entry $2 $3
 elif [ "$1" == "remove" ]; then
-    ZONE_FILE=${3:-$DEFAULT_ZONE_FILE}
+    FILE=${3:-$DEFAULT_ZONE_FILE}
     remove_entry $2
 elif [ "$1" == "list" ]; then
-    ZONE_FILE=${3:-$DEFAULT_ZONE_FILE}
-    list_entries $2
+    FILE=${ZONE_FILE:-$DEFAULT_ZONE_FILE}
+    list_entries
 elif [ "$1" == "status" ]; then
     status
 else
