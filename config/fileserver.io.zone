@@ -1,0 +1,48 @@
+$TTL 2d
+ 
+$ORIGIN fileserver.io.
+ 
+@      IN  SOA fileserver.io. ns.fileserver.io. (
+             2022052603  ; serial
+             12h     ; refresh
+             15m     ; retry
+             3w      ; expire
+             2h )     ; minimum TTL
+;
+@ IN NS ns.fileserver.io.
+ns IN A 100.94.52.61
+fileserver.io. IN A 100.94.52.61
+home IN A 100.94.52.61
+apps IN A 100.94.52.61
+ftp IN A 100.94.52.61
+scripts IN A 100.94.52.61
+archivist IN A 100.94.52.61
+bookstack IN A 100.94.52.61
+audiobookshelf IN A 100.94.52.61
+calibra IN A 100.94.52.61
+code IN A 100.94.52.61
+lubelog IN A 100.94.52.61
+monitorr IN A 100.94.52.61
+plex IN A 100.94.52.61
+tv.plex IN A 100.94.52.61
+movies.plex IN A 100.94.52.61
+postarr IN A 100.94.52.61
+subs.plex IN A 100.94.52.61
+meta.plex IN A 100.94.52.61
+stats.plex IN A 100.94.52.61
+requests IN A 100.94.52.61
+grafana IN A 100.94.52.61
+shortie IN A 100.94.52.61
+web.shortie IN A 100.94.52.61
+paste IN A 100.94.52.61
+hedgedoc IN A 100.94.52.61
+journal IN A 100.94.52.61
+kavita IN A 100.94.52.61
+linky IN A 100.94.52.61
+paperless IN A 100.94.52.61
+photoview IN A 100.94.52.61
+nodered IN A 100.94.52.61
+books IN A 100.94.52.61
+stirlingpdf IN A 100.94.52.61
+thelounge IN A 100.94.52.61
+webtop IN A 100.94.52.61

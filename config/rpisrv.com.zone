@@ -1,0 +1,14 @@
+TTL 2d
+ 
+$ORIGIN rpisrv.com.
+ 
+@      IN  SOA rpisrv.com. ns.rpisrv.com. (
+             2022052603  ; serial
+             12h     ; refresh
+             15m     ; retry
+             3w      ; expire
+             2h )     ; minimum TTL
+;
+@ IN NS ns.rpisrv.com.
+ns IN A 100.123.197.52
+rpisrv.com. IN A 100.123.197.52

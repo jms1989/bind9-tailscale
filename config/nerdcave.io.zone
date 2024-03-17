@@ -1,0 +1,15 @@
+$TTL 2d
+ 
+$ORIGIN nerdcave.io.
+ 
+@      IN  SOA nerdcave.io. ns.nerdcave.io. (
+             2022052603  ; serial
+             12h     ; refresh
+             15m     ; retry
+             3w      ; expire
+             2h )     ; minimum TTL
+;
+@ IN NS ns.nerdcave.io.
+ns IN A 100.94.52.61
+nerdcave.io. IN A 100.94.52.61
+apps.nerdcave.io IN A 100.94.52.61
