@@ -30,25 +30,27 @@ shift $((OPTIND -1))
 
 # Add entry to the zone file and restart the bind9 service
 function add_entry { 
-    echo "$1 IN A $2" >> $ZONE_PATH/$FILE
+    echo "$1 IN A $2" >> $ZONE_PATH/$ZONE_FILE
     echo "Added $1 -> $2"
     docker compose -f $COMPOSE_FILE restart bind9
 }
 
 # Remove entry from the zone file and restart the bind9 service
 function remove_entry {
-    sed -i "/$1/d" $ZONE_PATH/$FILE
+    sed -i "/$1/d" $ZONE_PATH/$ZONE_FILE
     echo "Removed $1"
     docker compose -f $COMPOSE_FILE restart bind9
 }
 
 # List all entries in the zone file
 function list_entries {
-    echo $ZONE_PATH/$FILE # debug
-    if [ -z "$HOSTNAME" ]; then
-        awk '/NS/ {flag=1} flag' $ZONE_PATH/$FILE
+    local hostname=$2
+    local zone_file=$3
+    echo $ZONE_PATH/$zone_file # debug
+    if [ -z "$zone_file" ]; then
+        awk '/NS/ {flag=1} flag' $ZONE_PATH/$zone_file
     else
-        awk -v hostname="$HOSTNAME" '/NS/ {flag=1} flag && $0 ~ hostname' $ZONE_PATH/$FILE
+        awk -v hostname="$hostname" '/NS/ {flag=1} flag && $0 ~ hostname' $ZONE_PATH/$zone_file
     fi
 }
 
@@ -63,14 +65,14 @@ function status {
 }
 
 if [ "$1" == "add" ]; then
-    FILE=${4:-$DEFAULT_ZONE_FILE}
+    ZONE_FILE=${4:-$DEFAULT_ZONE_FILE}
     add_entry $2 $3
 elif [ "$1" == "remove" ]; then
-    FILE=${3:-$DEFAULT_ZONE_FILE}
+    ZONE_FILE=${3:-$DEFAULT_ZONE_FILE}
     remove_entry $2
 elif [ "$1" == "list" ]; then
-    FILE=${ZONE_FILE:-$DEFAULT_ZONE_FILE}
-    list_entries
+    ZONE_FILE=${4:-$DEFAULT_ZONE_FILE}
+    list_entries $2 $3
 elif [ "$1" == "status" ]; then
     status
 else
