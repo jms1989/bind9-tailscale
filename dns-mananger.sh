@@ -44,14 +44,13 @@ function remove_entry {
 
 # List all entries in the zone file
 function list_entries {
-    local hostname=$2
-    local zone_file=$3
-    echo $ZONE_PATH/$zone_file # debug
-    if [ -z "$zone_file" ]; then
-        awk '/NS/ {flag=1} flag' $ZONE_PATH/$zone_file
-    else
-        awk -v hostname="$hostname" '/NS/ {flag=1} flag && $0 ~ hostname' $ZONE_PATH/$zone_file
-    fi
+    echo $HOSTNAME # debug
+    echo $ZONE_PATH/$ZONE_FILE # debug
+    # if [ -z "$ZONE_FILE" ]; then
+    #     awk '/NS/ {flag=1} flag' $ZONE_PATH/$ZONE_FILE
+    # else
+    #     awk -v hostname="$hostname" '/NS/ {flag=1} flag && $0 ~ hostname' $ZONE_PATH/$ZONE_FILE
+    # fi
 }
 
 # Check the status of the bind9 service
@@ -71,8 +70,9 @@ elif [ "$1" == "remove" ]; then
     ZONE_FILE=${3:-$DEFAULT_ZONE_FILE}
     remove_entry $2
 elif [ "$1" == "list" ]; then
-    ZONE_FILE=${4:-$DEFAULT_ZONE_FILE}
-    list_entries $2 $3
+    ZONE_FILE=${5:-$DEFAULT_ZONE_FILE}
+    HOSTNAME=${3:-""}
+    list_entries $5 
 elif [ "$1" == "status" ]; then
     status
 else
